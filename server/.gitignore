@@ -1,0 +1,16 @@
+# Ma'lumotlar bazasi (runtime'da yaratiladi)
+data/*.db
+data/*.db-journal
+data/*.db-wal
+data/*.db-shm
+
+# Muhit o'zgaruvchilari (maxfiy tokenlar)
+.env
+.env.local
+
+# Node
+node_modules/
+npm-debug.log
+
+# OS
+.DS_Store

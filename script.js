@@ -1,19 +1,12 @@
-// ===== ATLAS FLOWERS JavaScript =====
+// ===== ATLAS FLOWERS - Frontend (Backend API bilan integratsiya) =====
+
+const API_BASE = '/api';
 
 // Global o'zgaruvchilar
 let cart = [];
 let wishlist = [];
 let currentUser = null;
-
-// Mahsulotlar ma'lumotlar bazasi
-const products = [
-    { id: 1, name: "Romantik Atirgul Buketi", price: 350000, category: "roses premium", rating: 5, reviews: 48, description: "15 ta qizil premium atirgul, nozik qadoqlash bilan. Sevgi va muhabbat ramzi." },
-    { id: 2, name: "Bahor Lolalari", price: 280000, category: "tulips mixed", rating: 4, reviews: 32, description: "25 ta rang-barang lola, bahorning go'zalligi." },
-    { id: 3, name: "Oq Liliya Kompozitsiyasi", price: 420000, category: "lilies premium", rating: 5, reviews: 56, description: "Premium oq liliyalar va yashil, nafis kompozitsiya." },
-    { id: 4, name: "Quyosh Nuri", price: 240000, category: "mixed holiday", rating: 4.5, reviews: 41, description: "Sariq atirgul va kungaboqar, quvonch ramzi." },
-    { id: 5, name: "Binafsha Orzular", price: 310000, category: "mixed premium", rating: 5, reviews: 39, description: "Eustoma va pushti atirgullar, romantik kompozitsiya." },
-    { id: 6, name: "Hashamatli Quti", price: 650000, category: "roses premium", rating: 5, reviews: 64, description: "101 ta premium atirgul hashamatli qutida. Unutilmas sovg'a." }
-];
+let products = []; // Backend'dan yuklanadi
 
 // ===== DOM ELEMENTS =====
 const navMenu = document.getElementById('navMenu');
@@ -29,12 +22,38 @@ const productGrid = document.getElementById('productGrid');
 const loginModal = document.getElementById('loginModal');
 const quickViewModal = document.getElementById('quickViewModal');
 
+// ===== API YORDAMCHI FUNKSIYA =====
+async function api(path, options = {}) {
+    const response = await fetch(`${API_BASE}${path}`, {
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+        ...options,
+    });
+    let data;
+    try {
+        data = await response.json();
+    } catch (err) {
+        data = { ok: false, error: 'Server javobini o\'qishda xatolik' };
+    }
+    if (!response.ok || data.ok === false) {
+        throw new Error(data.error || 'Noma\'lum xatolik yuz berdi');
+    }
+    return data;
+}
+
 // ===== EVENT LISTENERS =====
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async () => {
     initializeApp();
     loadCartFromStorage();
     updateCartUI();
-    
+
+    await Promise.all([
+        loadProducts(),
+        checkCurrentUser(),
+    ]);
+
+    loadWishlistFromStorage();
+
     // Smooth scroll
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
@@ -42,7 +61,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const target = document.querySelector(this.getAttribute('href'));
             if (target) {
                 target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                // Close mobile menu
                 navMenu.classList.remove('active');
                 hamburger.classList.remove('active');
             }
@@ -50,36 +68,116 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// ===== MAHSULOTLARNI BACKEND'DAN YUKLASH =====
+async function loadProducts() {
+    try {
+        const data = await api('/products');
+        products = data.products;
+        renderProducts();
+    } catch (err) {
+        console.error('Mahsulotlarni yuklashda xatolik:', err.message);
+        if (productGrid) {
+            productGrid.innerHTML = `<p style="text-align:center; grid-column: 1/-1; color: var(--dark-gray);">Mahsulotlarni yuklab bo'lmadi. Server ishga tushirilganini tekshiring.</p>`;
+        }
+    }
+}
+
+function renderProducts() {
+    if (!productGrid) return;
+
+    productGrid.innerHTML = products.map((product) => {
+        const badgeHTML = product.badge
+            ? `<div class="product-badge ${product.badge}">${getBadgeText(product.badge)}</div>`
+            : '';
+        const oldPriceHTML = product.old_price
+            ? `<span class="old-price">${formatPrice(product.old_price).replace(" so'm", '')}</span>`
+            : '';
+        const stars = renderStars(product.rating);
+
+        return `
+            <div class="product-card" data-category="${product.category}" data-id="${product.id}">
+                <div class="product-image">
+                    ${badgeHTML}
+                    <div class="product-overlay">
+                        <button class="btn-icon" onclick="quickView(${product.id})">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn-icon" onclick="toggleWishlist(${product.id})">
+                            <i class="${wishlist.includes(product.id) ? 'fas' : 'far'} fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="placeholder-image ${product.image_class || 'rose-bg'}">
+                        <i class="fas fa-rose"></i>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">${escapeHtml(product.name)}</h3>
+                    <div class="product-rating">${stars}<span>(${product.reviews})</span></div>
+                    <p class="product-description">${escapeHtml(product.description || '')}</p>
+                    <div class="product-footer">
+                        <span class="product-price">${formatPrice(product.price)}</span>
+                        ${oldPriceHTML}
+                        <button class="btn btn-small" onclick="addToCart(${product.id}, '${escapeJs(product.name)}', ${product.price})">
+                            <i class="fas fa-shopping-bag"></i> Savatga
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function getBadgeText(badge) {
+    const texts = { top: 'Top', new: 'Yangi', sale: getDiscountLabel(), vip: 'VIP' };
+    return texts[badge] || badge;
+}
+
+function getDiscountLabel() {
+    return 'Chegirma';
+}
+
+function renderStars(rating) {
+    let html = '';
+    for (let i = 0; i < 5; i++) {
+        if (i < Math.floor(rating)) html += '<i class="fas fa-star"></i>';
+        else if (i < rating) html += '<i class="fas fa-star-half-alt"></i>';
+        else html += '<i class="far fa-star"></i>';
+    }
+    return html;
+}
+
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+function escapeJs(str) {
+    return String(str).replace(/'/g, "\\'");
+}
 
 // ===== INITIALIZATION =====
 function initializeApp() {
-    // Hamburger menu
     hamburger.addEventListener('click', () => {
         navMenu.classList.toggle('active');
         hamburger.classList.toggle('active');
     });
-    
-    // Scroll events
+
     window.addEventListener('scroll', () => {
-        // Scroll to top button
         if (window.pageYOffset > 300) {
             scrollTopBtn.classList.add('show');
         } else {
             scrollTopBtn.classList.remove('show');
         }
-        
-        // Active nav link
         updateActiveNavLink();
     });
-    
+
     scrollTopBtn.addEventListener('click', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
-    
-    // Search functionality
+
     searchInput.addEventListener('input', handleSearch);
-    
-    // Filter buttons
+
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -87,8 +185,7 @@ function initializeApp() {
             filterProducts(this.dataset.category);
         });
     });
-    
-    // Contact form
+
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', handleContactForm);
@@ -99,12 +196,12 @@ function initializeApp() {
 function updateActiveNavLink() {
     const sections = document.querySelectorAll('section[id]');
     const scrollY = window.pageYOffset;
-    
+
     sections.forEach(section => {
         const sectionHeight = section.offsetHeight;
         const sectionTop = section.offsetTop - 100;
         const sectionId = section.getAttribute('id');
-        
+
         if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.classList.remove('active');
@@ -116,36 +213,19 @@ function updateActiveNavLink() {
     });
 }
 
-
-// ===== SEARCH FUNCTIONALITY =====
+// ===== SEARCH & FILTER =====
 function handleSearch(e) {
     const searchTerm = e.target.value.toLowerCase();
-    const productCards = document.querySelectorAll('.product-card');
-    
-    productCards.forEach(card => {
-        const productName = card.querySelector('.product-name').textContent.toLowerCase();
-        const productDesc = card.querySelector('.product-description').textContent.toLowerCase();
-        
-        if (productName.includes(searchTerm) || productDesc.includes(searchTerm)) {
-            card.style.display = 'block';
-            card.style.animation = 'fadeInUp 0.5s ease';
-        } else {
-            card.style.display = 'none';
-        }
+    document.querySelectorAll('.product-card').forEach(card => {
+        const name = card.querySelector('.product-name').textContent.toLowerCase();
+        const desc = card.querySelector('.product-description').textContent.toLowerCase();
+        card.style.display = (name.includes(searchTerm) || desc.includes(searchTerm)) ? 'block' : 'none';
     });
 }
 
-// ===== FILTER FUNCTIONALITY =====
 function filterProducts(category) {
-    const productCards = document.querySelectorAll('.product-card');
-    
-    productCards.forEach(card => {
-        if (category === 'all' || card.dataset.category.includes(category)) {
-            card.style.display = 'block';
-            card.style.animation = 'fadeInUp 0.5s ease';
-        } else {
-            card.style.display = 'none';
-        }
+    document.querySelectorAll('.product-card').forEach(card => {
+        card.style.display = (category === 'all' || card.dataset.category.includes(category)) ? 'block' : 'none';
     });
 }
 
@@ -156,23 +236,14 @@ function toggleCart() {
 
 function addToCart(id, name, price) {
     const existingItem = cart.find(item => item.id === id);
-    
     if (existingItem) {
         existingItem.quantity += 1;
     } else {
-        cart.push({
-            id: id,
-            name: name,
-            price: price,
-            quantity: 1
-        });
+        cart.push({ id, name, price, quantity: 1 });
     }
-    
     updateCartUI();
     saveCartToStorage();
     showNotification(`${name} savatga qo'shildi!`);
-    
-    // Open cart sidebar
     cartSidebar.classList.add('active');
 }
 
@@ -195,13 +266,10 @@ function updateCartQuantity(id, change) {
     }
 }
 
-
 function updateCartUI() {
-    // Update cart count
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
     cartCount.textContent = totalItems;
-    
-    // Update cart items
+
     if (cart.length === 0) {
         cartItems.innerHTML = `
             <div class="empty-cart">
@@ -213,13 +281,13 @@ function updateCartUI() {
     } else {
         let itemsHTML = '';
         let total = 0;
-        
+
         cart.forEach(item => {
             total += item.price * item.quantity;
             itemsHTML += `
                 <div class="cart-item">
                     <div class="cart-item-info">
-                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-name">${escapeHtml(item.name)}</div>
                         <div class="cart-item-price">${formatPrice(item.price)}</div>
                         <div class="cart-item-quantity">
                             <button onclick="updateCartQuantity(${item.id}, -1)">-</button>
@@ -233,7 +301,7 @@ function updateCartUI() {
                 </div>
             `;
         });
-        
+
         cartItems.innerHTML = itemsHTML;
         cartTotal.textContent = formatPrice(total);
     }
@@ -245,135 +313,63 @@ function saveCartToStorage() {
 
 function loadCartFromStorage() {
     const savedCart = localStorage.getItem('atlasFlowersCart');
-    if (savedCart) {
-        cart = JSON.parse(savedCart);
+    if (savedCart) cart = JSON.parse(savedCart);
+}
+
+function loadWishlistFromStorage() {
+    const saved = localStorage.getItem('atlasFlowersWishlist');
+    if (saved) {
+        wishlist = JSON.parse(saved);
+        renderProducts(); // Yurak belgilarini to'g'ri holatda ko'rsatish uchun qayta chizamiz
     }
 }
 
-function checkout() {
+// ===== CHECKOUT (Backend API orqali) =====
+async function checkout() {
     if (cart.length === 0) {
         showNotification('Savatingiz bo\'sh!', 'error');
         return;
     }
-    
+
     if (!currentUser) {
         openLoginModal();
         showNotification('Buyurtma berish uchun tizimga kiring', 'info');
         return;
     }
-    
-    // Telefon raqamini so'rash
-    const phone = prompt('Telefon raqamingizni kiriting:', '+998 ');
+
+    const phone = prompt('Telefon raqamingizni kiriting:', currentUser.phone || '+998 ');
     if (!phone) return;
-    
-    // Buyurtma obyekti yaratish
-    const order = {
-        id: Date.now(),
-        customer: {
-            name: currentUser.name,
-            email: currentUser.email,
-            phone: phone
-        },
-        items: cart.map(item => ({
-            name: item.name,
-            price: item.price,
-            quantity: item.quantity
-        })),
-        total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
-        status: 'pending',
-        date: new Date().toISOString()
-    };
-    
-    // Buyurtmani saqlash
-    saveOrder(order);
-    
-    // Telegram'ga yuborish
-    sendOrderToTelegram(order);
-    
-    // Muvaffaqiyat xabari
-    showNotification('Buyurtma qabul qilindi! Tez orada siz bilan bog\'lanamiz.', 'success');
-    
-    // Savatni tozalash
-    cart = [];
-    updateCartUI();
-    saveCartToStorage();
-    toggleCart();
-}
 
-function saveOrder(order) {
-    // Buyurtmalarni LocalStorage'ga saqlash
-    let orders = JSON.parse(localStorage.getItem('atlasFlowersOrders') || '[]');
-    orders.push(order);
-    localStorage.setItem('atlasFlowersOrders', JSON.stringify(orders));
-    
-    // Mijozni saqlash
-    let customers = JSON.parse(localStorage.getItem('atlasFlowersCustomers') || '[]');
-    const customerExists = customers.find(c => c.email === order.customer.email);
-    if (!customerExists) {
-        customers.push({
-            name: order.customer.name,
-            email: order.customer.email,
-            phone: order.customer.phone,
-            registeredDate: new Date().toISOString()
-        });
-        localStorage.setItem('atlasFlowersCustomers', JSON.stringify(customers));
-    }
-}
+    const address = prompt('Yetkazib berish manzilini kiriting (ixtiyoriy):', '') || '';
 
-async function sendOrderToTelegram(order) {
-    // Telegram konfiguratsiyasini olish
-    const telegramConfig = JSON.parse(localStorage.getItem('atlasFlowersTelegram') || '{}');
-    
-    if (!telegramConfig.botToken || !telegramConfig.chatId) {
-        console.log('Telegram not configured');
-        return;
-    }
-    
-    const itemsList = order.items.map(item => 
-        `• ${item.name} x${item.quantity} - ${formatPrice(item.price * item.quantity)}`
-    ).join('\n');
-    
-    const message = `🌹 <b>ATLAS FLOWERS - Yangi Buyurtma!</b>\n\n` +
-        `<b>📦 Buyurtma ID:</b> #${order.id}\n` +
-        `<b>👤 Mijoz:</b> ${order.customer.name}\n` +
-        `<b>📞 Telefon:</b> ${order.customer.phone}\n` +
-        `<b>📧 Email:</b> ${order.customer.email}\n\n` +
-        `<b>🛍️ Mahsulotlar:</b>\n${itemsList}\n\n` +
-        `<b>💰 Jami:</b> ${formatPrice(order.total)}\n` +
-        `<b>📅 Vaqt:</b> ${new Date(order.date).toLocaleString('uz-UZ')}\n\n` +
-        `<i>Mijoz bilan bog'laning va buyurtmani tasdiqlang!</i>`;
-    
     try {
-        const response = await fetch(`https://api.telegram.org/bot${telegramConfig.botToken}/sendMessage`, {
+        const data = await api('/orders', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
             body: JSON.stringify({
-                chat_id: telegramConfig.chatId,
-                text: message,
-                parse_mode: 'HTML'
-            })
+                customer_name: currentUser.name,
+                customer_email: currentUser.email,
+                customer_phone: phone,
+                customer_address: address,
+                items: cart.map(item => ({ id: item.id, quantity: item.quantity })),
+            }),
         });
-        
-        const data = await response.json();
-        
-        if (data.ok) {
-            console.log('Order sent to Telegram successfully');
-        } else {
-            console.error('Telegram error:', data.description);
-        }
-    } catch (error) {
-        console.error('Failed to send to Telegram:', error);
+
+        showNotification(`Buyurtma qabul qilindi! (#${data.order.id}) Tez orada siz bilan bog'lanamiz.`, 'success');
+
+        cart = [];
+        updateCartUI();
+        saveCartToStorage();
+        toggleCart();
+    } catch (err) {
+        showNotification('Buyurtma yuborishda xatolik: ' + err.message, 'error');
     }
 }
-
 
 // ===== WISHLIST FUNCTIONALITY =====
 function toggleWishlist(id) {
     const index = wishlist.indexOf(id);
     const heartIcon = event.target.closest('.btn-icon').querySelector('i');
-    
+
     if (index === -1) {
         wishlist.push(id);
         heartIcon.classList.remove('far');
@@ -385,7 +381,7 @@ function toggleWishlist(id) {
         heartIcon.classList.add('far');
         showNotification('Sevimlilar ro\'yxatidan o\'chirildi');
     }
-    
+
     localStorage.setItem('atlasFlowersWishlist', JSON.stringify(wishlist));
 }
 
@@ -393,47 +389,27 @@ function toggleWishlist(id) {
 function quickView(id) {
     const product = products.find(p => p.id === id);
     if (!product) return;
-    
+
     const modal = document.getElementById('quickViewModal');
     const image = document.getElementById('quickViewImage');
     const title = document.getElementById('quickViewTitle');
     const price = document.getElementById('quickViewPrice');
     const description = document.getElementById('quickViewDescription');
     const rating = document.getElementById('quickViewRating');
-    
-    // Set image background
-    let bgClass = '';
-    if (product.category.includes('roses')) bgClass = 'rose-bg';
-    else if (product.category.includes('tulips')) bgClass = 'tulip-bg';
-    else if (product.category.includes('lilies')) bgClass = 'orchid-bg';
-    else bgClass = 'lavender-bg';
-    
-    image.innerHTML = `<div class="placeholder-image ${bgClass}"><i class="fas fa-flower"></i></div>`;
+
+    image.innerHTML = `<div class="placeholder-image ${product.image_class || 'rose-bg'}"><i class="fas fa-rose"></i></div>`;
     title.textContent = product.name;
     price.textContent = formatPrice(product.price);
-    description.textContent = product.description;
-    
-    // Generate stars
-    let starsHTML = '';
-    for (let i = 0; i < 5; i++) {
-        if (i < Math.floor(product.rating)) {
-            starsHTML += '<i class="fas fa-star"></i>';
-        } else if (i < product.rating) {
-            starsHTML += '<i class="fas fa-star-half-alt"></i>';
-        } else {
-            starsHTML += '<i class="far fa-star"></i>';
-        }
-    }
-    starsHTML += `<span>(${product.reviews})</span>`;
-    rating.innerHTML = starsHTML;
-    
+    description.textContent = product.description || '';
+    rating.innerHTML = renderStars(product.rating) + `<span>(${product.reviews})</span>`;
+
+    document.getElementById('quantityInput').value = 1;
     modal.classList.add('active');
     modal.dataset.productId = id;
 }
 
 function closeQuickView() {
-    const modal = document.getElementById('quickViewModal');
-    modal.classList.remove('active');
+    document.getElementById('quickViewModal').classList.remove('active');
 }
 
 function addFromQuickView() {
@@ -441,7 +417,7 @@ function addFromQuickView() {
     const productId = parseInt(modal.dataset.productId);
     const quantity = parseInt(document.getElementById('quantityInput').value);
     const product = products.find(p => p.id === productId);
-    
+
     if (product) {
         for (let i = 0; i < quantity; i++) {
             addToCart(product.id, product.name, product.price);
@@ -450,7 +426,6 @@ function addFromQuickView() {
     }
 }
 
-
 function increaseQuantity() {
     const input = document.getElementById('quantityInput');
     input.value = parseInt(input.value) + 1;
@@ -458,12 +433,10 @@ function increaseQuantity() {
 
 function decreaseQuantity() {
     const input = document.getElementById('quantityInput');
-    if (parseInt(input.value) > 1) {
-        input.value = parseInt(input.value) - 1;
-    }
+    if (parseInt(input.value) > 1) input.value = parseInt(input.value) - 1;
 }
 
-// ===== LOGIN/REGISTER MODAL =====
+// ===== LOGIN/REGISTER (Backend API orqali) =====
 function openLoginModal() {
     loginModal.classList.add('active');
 }
@@ -475,63 +448,91 @@ function closeLoginModal() {
 function showAuthTab(tab) {
     document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-    
+
     event.target.classList.add('active');
     document.getElementById(tab + 'Form').classList.add('active');
 }
 
-function handleLogin(e) {
+async function handleLogin(e) {
     e.preventDefault();
     const email = e.target.querySelector('input[type="email"]').value;
-    
-    currentUser = {
-        name: email.split('@')[0],
-        email: email
-    };
-    
-    localStorage.setItem('atlasFlowersUser', JSON.stringify(currentUser));
-    showNotification(`Xush kelibsiz, ${currentUser.name}!`);
-    closeLoginModal();
-    updateUserUI();
+    const password = e.target.querySelector('input[type="password"]').value;
+
+    try {
+        const data = await api('/auth/login', {
+            method: 'POST',
+            body: JSON.stringify({ email, password }),
+        });
+
+        currentUser = data.user;
+        showNotification(`Xush kelibsiz, ${currentUser.name}!`);
+        closeLoginModal();
+        updateUserUI();
+        e.target.reset();
+    } catch (err) {
+        showNotification('Kirishda xatolik: ' + err.message, 'error');
+    }
 }
 
-function handleRegister(e) {
+async function handleRegister(e) {
     e.preventDefault();
-    const name = e.target.querySelector('input[type="text"]').value;
-    const email = e.target.querySelector('input[type="email"]').value;
-    
-    currentUser = {
-        name: name,
-        email: email
-    };
-    
-    localStorage.setItem('atlasFlowersUser', JSON.stringify(currentUser));
-    showNotification(`Ro'yxatdan o'tdingiz, ${currentUser.name}!`);
-    closeLoginModal();
-    updateUserUI();
+    const inputs = e.target.querySelectorAll('input');
+    const name = inputs[0].value;
+    const email = inputs[1].value;
+    const phone = inputs[2].value;
+    const password = inputs[3].value;
+
+    try {
+        const data = await api('/auth/register', {
+            method: 'POST',
+            body: JSON.stringify({ name, email, phone, password }),
+        });
+
+        currentUser = data.user;
+        showNotification(`Ro'yxatdan o'tdingiz, ${currentUser.name}!`);
+        closeLoginModal();
+        updateUserUI();
+        e.target.reset();
+    } catch (err) {
+        showNotification('Ro\'yxatdan o\'tishda xatolik: ' + err.message, 'error');
+    }
+}
+
+async function checkCurrentUser() {
+    try {
+        const data = await api('/auth/me');
+        currentUser = data.user;
+        updateUserUI();
+    } catch (err) {
+        currentUser = null;
+    }
 }
 
 function updateUserUI() {
-    const userBtn = document.querySelector('.icon-btn:has(.fa-user)');
+    const userBtn = document.querySelector('.icon-btn[onclick="openLoginModal()"]');
     if (currentUser && userBtn) {
         userBtn.innerHTML = `<i class="fas fa-user-circle"></i>`;
         userBtn.title = currentUser.name;
+        userBtn.setAttribute('onclick', 'handleUserClick()');
+    }
+}
+
+async function handleUserClick() {
+    if (confirm(`${currentUser.name}, tizimdan chiqishni xohlaysizmi?`)) {
+        try {
+            await api('/auth/logout', { method: 'POST' });
+        } catch (err) { /* baribir tozalaymiz */ }
+        currentUser = null;
+        location.reload();
     }
 }
 
 // ===== CONTACT FORM =====
 function handleContactForm(e) {
     e.preventDefault();
-    const name = document.getElementById('name').value;
-    const phone = document.getElementById('phone').value;
-    const email = document.getElementById('email').value;
-    const message = document.getElementById('message').value;
-    
-    // Bu yerda backend'ga yuborish logikasi bo'lishi kerak
     showNotification('Xabaringiz yuborildi! Tez orada javob beramiz.');
     e.target.reset();
 }
-
 
 // ===== UTILITY FUNCTIONS =====
 function formatPrice(price) {
@@ -539,7 +540,6 @@ function formatPrice(price) {
 }
 
 function showNotification(message, type = 'success') {
-    // Create notification element
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
     notification.style.cssText = `
@@ -553,73 +553,41 @@ function showNotification(message, type = 'success') {
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
         z-index: 10000;
         animation: slideIn 0.3s ease;
-        max-width: 300px;
+        max-width: 320px;
     `;
     notification.innerHTML = `
         <div style="display: flex; align-items: center; gap: 0.5rem;">
             <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'times-circle' : 'info-circle'}"></i>
-            <span>${message}</span>
+            <span>${escapeHtml(message)}</span>
         </div>
     `;
-    
+
     document.body.appendChild(notification);
-    
-    // Remove after 3 seconds
+
     setTimeout(() => {
         notification.style.animation = 'slideOut 0.3s ease';
-        setTimeout(() => {
-            document.body.removeChild(notification);
-        }, 300);
-    }, 3000);
+        setTimeout(() => notification.remove(), 300);
+    }, 3500);
 }
 
-// Add animation styles
 const style = document.createElement('style');
 style.textContent = `
     @keyframes slideIn {
-        from {
-            transform: translateX(400px);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
+        from { transform: translateX(400px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
     }
-    
     @keyframes slideOut {
-        from {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        to {
-            transform: translateX(400px);
-            opacity: 0;
-        }
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(400px); opacity: 0; }
     }
 `;
 document.head.appendChild(style);
 
-// Close modals when clicking outside
 window.addEventListener('click', (e) => {
     if (e.target.classList.contains('modal')) {
         e.target.classList.remove('active');
     }
 });
 
-// Load user from storage on page load
-document.addEventListener('DOMContentLoaded', () => {
-    const savedUser = localStorage.getItem('atlasFlowersUser');
-    if (savedUser) {
-        currentUser = JSON.parse(savedUser);
-        updateUserUI();
-    }
-    
-    const savedWishlist = localStorage.getItem('atlasFlowersWishlist');
-    if (savedWishlist) {
-        wishlist = JSON.parse(savedWishlist);
-    }
-});
-
 console.log('🌹 ATLAS FLOWERS - Premium Gul Do\'koni');
-console.log('✨ Sayt muvaffaqiyatli yuklandi!');
+console.log('✨ Sayt muvaffaqiyatli yuklandi! (Backend API bilan ulangan)');

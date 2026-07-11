@@ -6,6 +6,66 @@
     padding-left: 250px;
 }
 
+/* ===== ADMIN LOGIN GATE ===== */
+.admin-panel-hidden {
+    display: none;
+}
+
+.admin-login-gate {
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gradient-primary);
+    background-image: url('atlas-pattern.svg');
+    background-size: 320px 160px;
+    background-blend-mode: multiply;
+    padding: 1rem;
+}
+
+.admin-login-card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+    animation: fadeInUp 0.4s ease;
+}
+
+.admin-login-card h2 {
+    margin-top: 1rem;
+    color: var(--primary-burgundy);
+    font-family: var(--font-elegant);
+    letter-spacing: 1px;
+}
+
+.admin-login-card > p {
+    color: var(--dark-gray);
+    margin-bottom: 1.5rem;
+}
+
+.admin-login-card form {
+    text-align: left;
+}
+
+.admin-login-error {
+    display: none;
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    background: #F8D7DA;
+    color: #721C24;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+.admin-login-error.show {
+    display: block;
+}
+
 /* ===== ADMIN HEADER ===== */
 .admin-header {
     position: fixed;

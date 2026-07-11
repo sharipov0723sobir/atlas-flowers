@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - ATLAS FLOWERS</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="admin-body">
+    <!-- Admin Header -->
+    <header class="admin-header">
+        <div class="admin-container">
+            <div class="admin-nav">
+                <div class="logo">
+                    <svg class="logo-icon" width="40" height="40" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <g transform="translate(50,50)">
+                            <path d="M 0,-30 Q 15,-15 0,0" fill="none" stroke="url(#goldGradient)" stroke-width="6" stroke-linecap="round"/>
+                            <path d="M 21,-21 Q 15,0 0,0" fill="none" stroke="url(#goldGradient)" stroke-width="6" stroke-linecap="round"/>
+                            <path d="M 30,0 Q 15,0 0,0" fill="none" stroke="url(#goldGradient)" stroke-width="6" stroke-linecap="round"/>
+                            <path d="M 21,21 Q 0,15 0,0" fill="none" stroke="url(#goldGradient)" stroke-width="6" stroke-linecap="round"/>
+                            <path d="M 0,30 Q 0,15 0,0" fill="none" stroke="url(#goldGradient)" stroke-width="6" stroke-linecap="round"/>
+                            <path d="M -21,21 Q 0,0 0,0" fill="none" stroke="url(#goldGradient)" stroke-width="6" stroke-linecap="round"/>
+                            <path d="M -30,0 Q 0,0 0,0" fill="none" stroke="url(#goldGradient)" stroke-width="6" stroke-linecap="round"/>
+                            <path d="M -21,-21 Q 0,0 0,0" fill="none" stroke="url(#goldGradient)" stroke-width="6" stroke-linecap="round"/>
+                            <circle cx="0" cy="0" r="8" fill="url(#goldGradient)"/>
+                        </g>
+                        <defs>
+                            <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#FFA500;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#FFB347;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="logo-text">ADMIN PANEL</span>
+                </div>
+                <div class="admin-user">
+                    <i class="fas fa-user-shield"></i>
+                    <span id="adminName">Administrator</span>
+                    <button class="btn-logout" onclick="adminLogout()">
+                        <i class="fas fa-sign-out-alt"></i> Chiqish
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar">
+        <nav class="admin-menu">
+            <a href="#dashboard" class="menu-item active" data-section="dashboard">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#orders" class="menu-item" data-section="orders">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Buyurtmalar</span>
+                <span class="badge-count" id="ordersCount">0</span>
+            </a>
+            <a href="#products" class="menu-item" data-section="products">
+                <i class="fas fa-box"></i>
+                <span>Mahsulotlar</span>
+            </a>
+            <a href="#customers" class="menu-item" data-section="customers">
+                <i class="fas fa-users"></i>
+                <span>Mijozlar</span>
+            </a>
+            <a href="#settings" class="menu-item" data-section="settings">
+                <i class="fas fa-cog"></i>
+                <span>Sozlamalar</span>
+            </a>
+            <a href="#telegram" class="menu-item" data-section="telegram">
+                <i class="fab fa-telegram"></i>
+                <span>Telegram Bot</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Admin Content -->
+    <main class="admin-content">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="admin-section active">
+            <div class="section-header">
+                <h1>Dashboard</h1>
+                <p>Umumiy statistika va ko'rsatkichlar</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #8B1538, #C41E3A);">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalOrders">0</h3>
+                        <p>Jami Buyurtmalar</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #FFA500, #FFB347);">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalRevenue">0 so'm</h3>
+                        <p>Jami Daromad</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #722F37, #8B1538);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalCustomers">0</h3>
+                        <p>Jami Mijozlar</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #C41E3A, #722F37);">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalProducts">6</h3>
+                        <p>Jami Mahsulotlar</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>So'nggi 7 kunlik buyurtmalar</h3>
+                    <canvas id="ordersChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Eng ko'p sotilgan mahsulotlar</h3>
+                    <div id="topProducts" class="top-products-list"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Orders Section -->
+        <section id="orders" class="admin-section">
+            <div class="section-header">
+                <h1>Buyurtmalar</h1>
+                <p>Barcha buyurtmalarni boshqarish</p>
+            </div>
+
+            <div class="orders-filters">
+                <button class="filter-btn active" data-status="all">Barchasi</button>
+                <button class="filter-btn" data-status="pending">Kutilmoqda</button>
+                <button class="filter-btn" data-status="processing">Jarayonda</button>
+                <button class="filter-btn" data-status="completed">Bajarildi</button>
+                <button class="filter-btn" data-status="cancelled">Bekor qilindi</button>
+            </div>
+
+            <div class="orders-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Mijoz</th>
+                            <th>Telefon</th>
+                            <th>Mahsulotlar</th>
+                            <th>Summa</th>
+                            <th>Holat</th>
+                            <th>Vaqt</th>
+                            <th>Harakatlar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                        <!-- Orders will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section id="products" class="admin-section">
+            <div class="section-header">
+                <h1>Mahsulotlar</h1>
+                <button class="btn btn-primary" onclick="openProductModal()">
+                    <i class="fas fa-plus"></i> Yangi Mahsulot
+                </button>
+            </div>
+
+            <div class="products-grid" id="adminProductsGrid">
+                <!-- Products will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Customers Section -->
+        <section id="customers" class="admin-section">
+            <div class="section-header">
+                <h1>Mijozlar</h1>
+                <p>Ro'yxatdan o'tgan mijozlar</p>
+            </div>
+
+            <div class="customers-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Ism</th>
+                            <th>Email</th>
+                            <th>Telefon</th>
+                            <th>Buyurtmalar</th>
+                            <th>Ro'yxat sanasi</th>
+                            <th>Harakatlar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customersTableBody">
+                        <!-- Customers will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Settings Section -->
+        <section id="settings" class="admin-section">
+            <div class="section-header">
+                <h1>Sozlamalar</h1>
+                <p>Sayt sozlamalari</p>
+            </div>
+
+            <div class="settings-grid">
+                <div class="settings-card">
+                    <h3><i class="fas fa-store"></i> Do'kon Ma'lumotlari</h3>
+                    <form id="shopInfoForm">
+                        <div class="form-group">
+                            <label>Do'kon Nomi</label>
+                            <input type="text" value="ATLAS FLOWERS" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Telefon</label>
+                            <input type="tel" value="+998 90 123 45 67" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" value="info@atlasflowers.uz" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Manzil</label>
+                            <textarea rows="3" required>Toshkent sh., Amir Temur ko'chasi, 108</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Saqlash</button>
+                    </form>
+                </div>
+
+                <div class="settings-card">
+                    <h3><i class="fas fa-truck"></i> Yetkazib Berish</h3>
+                    <form id="deliveryForm">
+                        <div class="form-group">
+                            <label>Yetkazib berish narxi</label>
+                            <input type="number" value="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Bepul yetkazib berish (dan yuqori)</label>
+                            <input type="number" value="500000" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Yetkazib berish vaqti</label>
+                            <input type="text" value="2-3 soat" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Saqlash</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Telegram Bot Section -->
+        <section id="telegram" class="admin-section">
+            <div class="section-header">
+                <h1><i class="fab fa-telegram"></i> Telegram Bot Sozlamalari</h1>
+                <p>Buyurtmalar avtomatik Telegram'ga tushadi</p>
+            </div>
+
+            <div class="telegram-setup">
+                <div class="setup-card">
+                    <div class="setup-header">
+                        <i class="fab fa-telegram telegram-icon"></i>
+                        <h2>Telegram Bot'ni Ulash</h2>
+                    </div>
+
+                    <div class="setup-steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Bot yarating</h4>
+                                <p>Telegram'da <strong>@BotFather</strong> botiga yozing va <code>/newbot</code> buyrug'ini yuboring</p>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Bot tokenini oling</h4>
+                                <p>BotFather sizga token beradi. Masalan: <code>123456789:ABCdefGHIjklMNOpqrsTUVwxyz</code></p>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Chat ID ni oling</h4>
+                                <p>Bot'ga <code>/start</code> yuboring, keyin <strong>@userinfobot</strong> orqali o'z Chat ID'ingizni bilib oling</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form id="telegramForm" class="telegram-form">
+                        <div class="form-group">
+                            <label><i class="fas fa-key"></i> Bot Token</label>
+                            <input type="text" id="botToken" placeholder="123456789:ABCdefGHIjklMNOpqrsTUVwxyz" required>
+                            <small>BotFather'dan olgan token'ni kiriting</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> Chat ID</label>
+                            <input type="text" id="chatId" placeholder="123456789" required>
+                            <small>Buyurtmalar kelishi kerak bo'lgan Chat ID</small>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="testTelegramBot()">
+                                <i class="fas fa-vial"></i> Test Xabar Yuborish
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Saqlash
+                            </button>
+                        </div>
+                    </form>
+
+                    <div id="telegramStatus" class="telegram-status"></div>
+                </div>
+
+                <div class="telegram-preview">
+                    <h3>Xabar Ko'rinishi</h3>
+                    <div class="telegram-message-preview">
+                        <div class="telegram-msg">
+                            <strong>🌹 ATLAS FLOWERS - Yangi Buyurtma!</strong><br><br>
+                            <strong>📦 Buyurtma ID:</strong> #12345<br>
+                            <strong>👤 Mijoz:</strong> Sardor Rahimov<br>
+                            <strong>📞 Telefon:</strong> +998 90 123 45 67<br>
+                            <strong>📧 Email:</strong> sardor@example.com<br><br>
+                            <strong>🛍️ Mahsulotlar:</strong><br>
+                            • Romantik Atirgul Buketi x1 - 350,000 so'm<br>
+                            • Bahor Lolalari x2 - 560,000 so'm<br><br>
+                            <strong>💰 Jami:</strong> 910,000 so'm<br>
+                            <strong>📅 Vaqt:</strong> 2026-07-11 10:30<br><br>
+                            <em>Mijoz bilan bog'laning va buyurtmani tasdiqlang!</em>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Product Modal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content modal-large">
+            <span class="close-modal" onclick="closeProductModal()">&times;</span>
+            <div class="modal-body">
+                <h2 id="productModalTitle">Yangi Mahsulot Qo'shish</h2>
+                <form id="productForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Mahsulot Nomi</label>
+                            <input type="text" id="productName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Narx (so'm)</label>
+                            <input type="number" id="productPrice" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Kategoriya</label>
+                            <select id="productCategory" required>
+                                <option value="roses">Atirgullar</option>
+                                <option value="tulips">Lola</option>
+                                <option value="lilies">Liliya</option>
+                                <option value="mixed">Aralash</option>
+                                <option value="premium">Premium</option>
+                                <option value="holiday">Bayram</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="productStatus">
+                                <option value="active">Faol</option>
+                                <option value="inactive">Nofaol</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Tavsif</label>
+                        <textarea id="productDescription" rows="3" required></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeProductModal()">Bekor qilish</button>
+                        <button type="submit" class="btn btn-primary">Saqlash</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin-script.js"></script>
+</body>
+</html>

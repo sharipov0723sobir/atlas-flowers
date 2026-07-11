@@ -75,61 +75,55 @@ http://localhost:8000
 ```
 atlas-flowers/
 │
-├── index.html          # Asosiy HTML fayl
-├── styles.css          # CSS dizayn fayli
-├── script.js           # JavaScript funksiyalar
-└── README.md          # Ushbu fayl
+├── index.html          # Asosiy sahifa
+├── admin.html          # Admin panel
+├── styles.css          # Asosiy CSS
+├── admin-styles.css    # Admin panel CSS
+├── script.js           # Asosiy JavaScript
+├── admin-script.js     # Admin panel JavaScript
+├── .gitignore          # Git sozlamalari
+└── README.md           # Dokumentatsiya
 ```
 
 ## 🎯 Sahifalar va Bo'limlar
 
-### 1️⃣ Bosh Sahifa
-- Katta hero banner: "Har bir gul – qalbdan sovg'a"
-- "Hoziroq buyurtma berish" tugmasi
-- Aksiya banneri
-- Mashhur guldastalar
+### 1️⃣ Asosiy Sayt (index.html)
+- Bosh sahifa (Hero banner)
+- Mahsulotlar bo'limi (6 ta mahsulot)
+- Kategoriyalar filtri
+- Kolleksiyalar
+- Mijozlar fikrlari
+- Aloqa formasi
+- Savatcha
+- Login/Register
 
-### 2️⃣ Mahsulotlar
-**Kategoriyalar:**
-- 🌹 Atirgullar
-- 🌷 Lola
-- 🌸 Liliya
-- 💐 Aralash buketlar
-- 💎 Premium buketlar
-- 🎉 Bayram kolleksiyasi
+### 2️⃣ Admin Panel (admin.html)
+**Dashboard:**
+- Jami buyurtmalar statistikasi
+- Jami daromad
+- Jami mijozlar
+- Eng ko'p sotilgan mahsulotlar
 
-**Har bir mahsulot:**
-- Rasm (rangli placeholder)
-- Nomi va tavsifi
-- Narxi
-- Reyting (yulduzchalar)
-- "Savatga qo'shish" tugmasi
-- Quick View (tezkor ko'rish)
-- Wishlist (sevimlilar)
+**Buyurtmalar:**
+- Barcha buyurtmalarni ko'rish
+- Status bo'yicha filtrlash
+- Buyurtmani bajarish/bekor qilish
+- Telegram'ga avtomatik yuborish
 
-### 3️⃣ Kolleksiyalar
-- Sevgi Kolleksiyasi
-- Bayram Kolleksiyasi
-- Premium Kolleksiya
+**Mahsulotlar:**
+- Mahsulotlar ro'yxati
+- Yangi mahsulot qo'shish
+- Mahsulotni tahrirlash/o'chirish
 
-### 4️⃣ Mijozlar Fikrlari
-- Baho (5 yulduz)
-- Sharh matni
-- Mijoz ismi va shahri
+**Mijozlar:**
+- Ro'yxatdan o'tgan mijozlar
+- Mijozlar buyurtmalari
 
-### 5️⃣ Aloqa
-**Ma'lumotlar:**
-- 📍 Manzil: Toshkent sh., Amir Temur ko'chasi, 108
-- 📞 Telefon: +998 90 123 45 67, +998 91 234 56 78
-- 💬 Telegram: @atlasflowers
-- 📷 Instagram: @atlas.flowers
-- 🕐 Ish vaqti: Har kuni 08:00 - 22:00
-
-**Aloqa formasi:**
-- Ism
-- Telefon
-- Email
-- Xabar
+**Telegram Bot:**
+- Bot token sozlash
+- Chat ID sozlash
+- Test xabar yuborish
+- Avtomatik buyurtma yuborish
 
 ## 🛒 Savatcha Funksiyalari
 
@@ -184,19 +178,56 @@ atlas-flowers/
 - **Font Awesome**: Ikonkalar
 - **LocalStorage**: Ma'lumotlarni saqlash
 
-## 📊 Mahsulotlar Ma'lumotlari
+## 📱 Telegram Bot Sozlash
 
-Saytda 6 ta mahsulot namunasi mavjud:
+### 1. Bot Yaratish
 
-1. **Romantik Atirgul Buketi** - 350,000 so'm
-2. **Bahor Lolalari** - 280,000 so'm
-3. **Oq Liliya Kompozitsiyasi** - 420,000 so'm
-4. **Quyosh Nuri** - 240,000 so'm (20% chegirma)
-5. **Binafsha Orzular** - 310,000 so'm
-6. **Hashamatli Quti** - 650,000 so'm (VIP)
+1. Telegram'da **@BotFather** botiga yozing
+2. `/newbot` buyrug'ini yuboring
+3. Bot nomini kiriting (masalan: `ATLAS FLOWERS Bot`)
+4. Bot username'ini kiriting (masalan: `atlas_flowers_bot`)
+5. BotFather sizga **Token** beradi: `123456789:ABCdefGHIjklMNOpqrsTUVwxyz`
+
+### 2. Chat ID Olish
+
+1. Yaratgan botingizga `/start` yuboring
+2. **@userinfobot** botiga o'ting
+3. O'z **Chat ID**'ingizni ko'ring (masalan: `123456789`)
+
+### 3. Admin Panelda Sozlash
+
+1. `admin.html` sahifasini oching
+2. **Telegram Bot** bo'limiga o'ting
+3. **Bot Token** va **Chat ID** ni kiriting
+4. **Test Xabar Yuborish** tugmasini bosing
+5. Telegram'da xabar kelganini tekshiring
+6. **Saqlash** tugmasini bosing
+
+### 4. Avtomatik Buyurtmalar
+
+Endi barcha buyurtmalar avtomatik ravishda Telegram'ga tushadi:
+
+```
+🌹 ATLAS FLOWERS - Yangi Buyurtma!
+
+📦 Buyurtma ID: #12345
+👤 Mijoz: Sardor Rahimov
+📞 Telefon: +998 90 123 45 67
+📧 Email: sardor@example.com
+
+🛍️ Mahsulotlar:
+• Romantik Atirgul Buketi x1 - 350,000 so'm
+• Bahor Lolalari x2 - 560,000 so'm
+
+💰 Jami: 910,000 so'm
+📅 Vaqt: 2026-07-11 10:30
+
+Mijoz bilan bog'laning va buyurtmani tasdiqlang!
+```
 
 ## 🎁 Premium Funksiyalar
 
+### Mijozlar Uchun:
 ✅ Aksiya bannerlari va promo kodlar
 ✅ Chegirmalarni ko'rsatish
 ✅ Top, Yangi, VIP belgilar
@@ -205,17 +236,35 @@ Saytda 6 ta mahsulot namunasi mavjud:
 ✅ Scroll to top tugmasi
 ✅ Qidiruv funksiyasi
 ✅ Filter funksiyasi
+✅ Savatcha (LocalStorage)
+✅ Login/Register tizimi
+✅ Quick View
+✅ Wishlist
+
+### Admin Panel:
+✅ Dashboard (statistika)
+✅ Buyurtmalarni boshqarish
+✅ Mahsulotlarni boshqarish
+✅ Mijozlarni ko'rish
+✅ Telegram bot integratsiyasi
+✅ Real-time buyurtma xabarnomalar
+✅ Status o'zgartirish
+✅ Test xabar yuborish
 
 ## 🔮 Kelajakda Qo'shilishi Mumkin
 
-- 🔒 Backend integratsiyasi
-- 💳 To'lov tizimi (Click, Payme)
+- 🔒 Backend integratsiyasi (Node.js, PHP, Python)
+- 💳 To'lov tizimi (Click, Payme, Uzcard)
 - 📧 Email xabarnomalar
-- 📊 Admin panel
-- 📦 Buyurtmalarni kuzatish
-- 🎨 Mahsulot rasmlari
+- 📊 Kengaytirilgan statistika
+- 📦 Buyurtma tracking
+- 🎨 Real mahsulot rasmlari
 - 🗺️ Xarita integratsiyasi
-- 🌐 Ko'p tillilik
+- 🌐 Ko'p tillilik (O'zbek, Rus, Ingliz)
+- 👥 Foydalanuvchi rollari (Admin, Manager, Operator)
+- 📱 Mobile app (Flutter, React Native)
+- 🤖 AI chatbot yordamchisi
+- 📈 SEO optimizatsiya
 
 ## 📞 Qo'llab-quvvatlash
 

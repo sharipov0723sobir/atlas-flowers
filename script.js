@@ -262,15 +262,110 @@ function checkout() {
         return;
     }
     
-    // Buyurtma berish logikasi
-    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const message = `Buyurtma qabul qilindi!\nJami: ${formatPrice(total)}\n\nBiz tez orada siz bilan bog'lanamiz.`;
+    // Telefon raqamini so'rash
+    const phone = prompt('Telefon raqamingizni kiriting:', '+998 ');
+    if (!phone) return;
     
-    alert(message);
+    // Buyurtma obyekti yaratish
+    const order = {
+        id: Date.now(),
+        customer: {
+            name: currentUser.name,
+            email: currentUser.email,
+            phone: phone
+        },
+        items: cart.map(item => ({
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity
+        })),
+        total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
+        status: 'pending',
+        date: new Date().toISOString()
+    };
+    
+    // Buyurtmani saqlash
+    saveOrder(order);
+    
+    // Telegram'ga yuborish
+    sendOrderToTelegram(order);
+    
+    // Muvaffaqiyat xabari
+    showNotification('Buyurtma qabul qilindi! Tez orada siz bilan bog\'lanamiz.', 'success');
+    
+    // Savatni tozalash
     cart = [];
     updateCartUI();
     saveCartToStorage();
     toggleCart();
+}
+
+function saveOrder(order) {
+    // Buyurtmalarni LocalStorage'ga saqlash
+    let orders = JSON.parse(localStorage.getItem('atlasFlowersOrders') || '[]');
+    orders.push(order);
+    localStorage.setItem('atlasFlowersOrders', JSON.stringify(orders));
+    
+    // Mijozni saqlash
+    let customers = JSON.parse(localStorage.getItem('atlasFlowersCustomers') || '[]');
+    const customerExists = customers.find(c => c.email === order.customer.email);
+    if (!customerExists) {
+        customers.push({
+            name: order.customer.name,
+            email: order.customer.email,
+            phone: order.customer.phone,
+            registeredDate: new Date().toISOString()
+        });
+        localStorage.setItem('atlasFlowersCustomers', JSON.stringify(customers));
+    }
+}
+
+async function sendOrderToTelegram(order) {
+    // Telegram konfiguratsiyasini olish
+    const telegramConfig = JSON.parse(localStorage.getItem('atlasFlowersTelegram') || '{}');
+    
+    if (!telegramConfig.botToken || !telegramConfig.chatId) {
+        console.log('Telegram not configured');
+        return;
+    }
+    
+    const itemsList = order.items.map(item => 
+        `• ${item.name} x${item.quantity} - ${formatPrice(item.price * item.quantity)}`
+    ).join('\n');
+    
+    const message = `🌹 <b>ATLAS FLOWERS - Yangi Buyurtma!</b>\n\n` +
+        `<b>📦 Buyurtma ID:</b> #${order.id}\n` +
+        `<b>👤 Mijoz:</b> ${order.customer.name}\n` +
+        `<b>📞 Telefon:</b> ${order.customer.phone}\n` +
+        `<b>📧 Email:</b> ${order.customer.email}\n\n` +
+        `<b>🛍️ Mahsulotlar:</b>\n${itemsList}\n\n` +
+        `<b>💰 Jami:</b> ${formatPrice(order.total)}\n` +
+        `<b>📅 Vaqt:</b> ${new Date(order.date).toLocaleString('uz-UZ')}\n\n` +
+        `<i>Mijoz bilan bog'laning va buyurtmani tasdiqlang!</i>`;
+    
+    try {
+        const response = await fetch(`https://api.telegram.org/bot${telegramConfig.botToken}/sendMessage`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                chat_id: telegramConfig.chatId,
+                text: message,
+                parse_mode: 'HTML'
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.ok) {
+            console.log('Order sent to Telegram successfully');
+        } else {
+            console.error('Telegram error:', data.description);
+        }
+    } catch (error) {
+        console.error('Failed to send to Telegram:', error);
+    }
 }
 
 

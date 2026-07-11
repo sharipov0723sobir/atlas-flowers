@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="320" height="160" viewBox="0 0 320 160">
+  <!-- ATLAS FLOWERS - O'zbek ikat/bahmal naqshi (seamless tile 320x160) -->
+  <defs>
+    <path id="flame" d="M 0,-40 L 20,0 L 40,-40 L 40,40 L 20,80 L 0,40 Z"/>
+  </defs>
+  <rect width="320" height="160" fill="#B7AC9E"/>
+
+  <g>
+    <use xlink:href="#flame" href="#flame" x="0"   y="0"  fill="#8B1538"/>
+    <use xlink:href="#flame" href="#flame" x="0"   y="80" fill="#8B1538"/>
+    <use xlink:href="#flame" href="#flame" x="40"  y="40" fill="#C41E3A"/>
+    <use xlink:href="#flame" href="#flame" x="40"  y="-40" fill="#C41E3A"/>
+    <use xlink:href="#flame" href="#flame" x="40"  y="120" fill="#C41E3A"/>
+    <use xlink:href="#flame" href="#flame" x="80"  y="0"  fill="#B7AC9E"/>
+    <use xlink:href="#flame" href="#flame" x="80"  y="80" fill="#B7AC9E"/>
+    <use xlink:href="#flame" href="#flame" x="120" y="40" fill="#A8123F"/>
+    <use xlink:href="#flame" href="#flame" x="120" y="-40" fill="#A8123F"/>
+    <use xlink:href="#flame" href="#flame" x="120" y="120" fill="#A8123F"/>
+    <use xlink:href="#flame" href="#flame" x="160" y="0"  fill="#722F37"/>
+    <use xlink:href="#flame" href="#flame" x="160" y="80" fill="#722F37"/>
+    <use xlink:href="#flame" href="#flame" x="200" y="40" fill="#C41E3A"/>
+    <use xlink:href="#flame" href="#flame" x="200" y="-40" fill="#C41E3A"/>
+    <use xlink:href="#flame" href="#flame" x="200" y="120" fill="#C41E3A"/>
+    <use xlink:href="#flame" href="#flame" x="240" y="0"  fill="#8B1538"/>
+    <use xlink:href="#flame" href="#flame" x="240" y="80" fill="#8B1538"/>
+    <use xlink:href="#flame" href="#flame" x="280" y="40" fill="#B7AC9E"/>
+    <use xlink:href="#flame" href="#flame" x="280" y="-40" fill="#B7AC9E"/>
+    <use xlink:href="#flame" href="#flame" x="280" y="120" fill="#B7AC9E"/>
+  </g>
+</svg>

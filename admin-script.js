@@ -33,7 +33,7 @@ const panelRoot = document.getElementById('adminPanelRoot');
 
 document.getElementById('adminLoginForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const email = document.getElementById('adminLoginEmail').value;
+    const login = document.getElementById('adminLoginEmail').value;
     const password = document.getElementById('adminLoginPassword').value;
     const errorDiv = document.getElementById('adminLoginError');
     errorDiv.classList.remove('show');
@@ -41,7 +41,7 @@ document.getElementById('adminLoginForm')?.addEventListener('submit', async (e) 
     try {
         const data = await api('/auth/login', {
             method: 'POST',
-            body: JSON.stringify({ email, password }),
+            body: JSON.stringify({ login, password }),
         });
 
         if (data.user.role !== 'admin') {

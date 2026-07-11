@@ -51,7 +51,7 @@ cd atlas-flowers/server
 
 # 2. (ixtiyoriy) Muhit o'zgaruvchilarini sozlash
 cp .env.example .env
-# .env faylini ochib ADMIN_EMAIL, ADMIN_PASSWORD, PORT qiymatlarini o'zgartiring
+# .env faylini ochib ADMIN_USERNAME, ADMIN_PASSWORD, PORT qiymatlarini o'zgartiring
 
 # 3. Serverni ishga tushirish
 node --experimental-sqlite index.js
@@ -61,7 +61,9 @@ node --experimental-sqlite index.js
 Server birinchi marta ishga tushganda avtomatik:
 - SQLite ma'lumotlar bazasini yaratadi (`server/data/atlas-flowers.db`)
 - 6 ta namunaviy mahsulotni qo'shadi
-- Admin hisobini yaratadi: **admin@atlasflowers.uz / admin123** (`.env` orqali o'zgartiriladi)
+- Admin hisobini yaratadi: **Login: `Sobir0980` / Parol: `admin1234`** (`.env` orqali o'zgartiriladi)
+
+> ℹ️ Admin panelga kirish endi **email emas, login (username)** orqali amalga oshiriladi. Oddiy mijozlar esa xohlasa email, xohlasa login bilan ro'yxatdan o'tishi mumkin.
 
 ### Saytni ochish
 

@@ -8,7 +8,8 @@ function initSchema() {
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
-            email TEXT UNIQUE NOT NULL,
+            username TEXT UNIQUE,
+            email TEXT UNIQUE,
             phone TEXT,
             password_hash TEXT NOT NULL,
             password_salt TEXT NOT NULL,
@@ -16,6 +17,14 @@ function initSchema() {
             created_at TEXT NOT NULL DEFAULT (datetime('now'))
         );
     `);
+
+    // Eski bazalar uchun migratsiya: agar 'username' ustuni mavjud bo'lmasa, qo'shamiz
+    const columns = db.prepare("PRAGMA table_info(users)").all();
+    const hasUsername = columns.some((col) => col.name === 'username');
+    if (!hasUsername) {
+        db.exec('ALTER TABLE users ADD COLUMN username TEXT;');
+        console.log("ℹ️  Migratsiya: 'username' ustuni users jadvaliga qo'shildi");
+    }
 
     // Sessiyalar (login token'lari)
     db.exec(`

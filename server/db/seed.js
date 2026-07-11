@@ -54,20 +54,21 @@ function seed() {
     console.log('✅ Sozlamalar tayyor');
 
     // ----- Admin hisobini yaratish (faqat mavjud bo'lmasa) -----
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@atlasflowers.uz';
-    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    // Login sifatida username ishlatiladi (email emas)
+    const adminUsername = process.env.ADMIN_USERNAME || 'Sobir0980';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'admin1234';
 
-    const existingAdmin = db.prepare('SELECT id FROM users WHERE email = ?').get(adminEmail);
+    const existingAdmin = db.prepare('SELECT id FROM users WHERE username = ?').get(adminUsername);
     if (!existingAdmin) {
         const { hash, salt } = hashPassword(adminPassword);
         db.prepare(`
-            INSERT INTO users (name, email, phone, password_hash, password_salt, role)
-            VALUES (?, ?, ?, ?, ?, 'admin')
-        `).run('Administrator', adminEmail, '+998900000000', hash, salt);
-        console.log(`✅ Admin hisobi yaratildi: ${adminEmail} / ${adminPassword}`);
+            INSERT INTO users (name, username, email, phone, password_hash, password_salt, role)
+            VALUES (?, ?, ?, ?, ?, ?, 'admin')
+        `).run('Administrator', adminUsername, null, '+998900000000', hash, salt);
+        console.log(`✅ Admin hisobi yaratildi: ${adminUsername} / ${adminPassword}`);
         console.log('⚠️  Ishga tushirgandan keyin parolni albatta o\'zgartiring!');
     } else {
-        console.log(`ℹ️  Admin hisobi allaqachon mavjud: ${adminEmail}`);
+        console.log(`ℹ️  Admin hisobi allaqachon mavjud: ${adminUsername}`);
     }
 
     console.log('🌹 Seed muvaffaqiyatli yakunlandi!');

@@ -10,6 +10,8 @@ const { createSession, getUserByToken, destroySession } = require('../utils/sess
 const { sendJson, sendError, readJsonBody, extractToken, setSessionCookie, clearSessionCookie } = require('../utils/http');
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// Login (username): harflar, raqamlar, "_", "." — kamida 3 belgi
+const USERNAME_REGEX = /^[a-zA-Z0-9_.]{3,30}$/;
 
 function register(router) {
     router.post('/api/auth/register', async (req, res) => {
@@ -20,21 +22,32 @@ function register(router) {
             return sendError(res, 400, err.message);
         }
 
-        const { name, email, phone, password } = body;
+        const { name, email, username, phone, password } = body;
 
         if (!name || !name.trim()) return sendError(res, 400, "Ism kiritilishi shart");
-        if (!email || !EMAIL_REGEX.test(email)) return sendError(res, 400, "Email noto'g'ri formatda");
         if (!password || password.length < 6) return sendError(res, 400, "Parol kamida 6 belgidan iborat bo'lishi kerak");
 
-        const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(email.toLowerCase());
-        if (existing) return sendError(res, 409, "Bu email bilan foydalanuvchi allaqachon mavjud");
+        const hasEmail = email && email.trim();
+        const hasUsername = username && username.trim();
+        if (!hasEmail && !hasUsername) return sendError(res, 400, "Email yoki login kiritilishi shart");
+        if (hasEmail && !EMAIL_REGEX.test(email)) return sendError(res, 400, "Email noto'g'ri formatda");
+        if (hasUsername && !USERNAME_REGEX.test(username)) return sendError(res, 400, "Login kamida 3 belgidan iborat bo'lishi va faqat harf/raqam/._ dan tashkil topishi kerak");
+
+        if (hasEmail) {
+            const existingEmail = db.prepare('SELECT id FROM users WHERE email = ?').get(email.toLowerCase());
+            if (existingEmail) return sendError(res, 409, "Bu email bilan foydalanuvchi allaqachon mavjud");
+        }
+        if (hasUsername) {
+            const existingUsername = db.prepare('SELECT id FROM users WHERE username = ?').get(username);
+            if (existingUsername) return sendError(res, 409, "Bu login bilan foydalanuvchi allaqachon mavjud");
+        }
 
         const { hash, salt } = hashPassword(password);
 
         const result = db.prepare(`
-            INSERT INTO users (name, email, phone, password_hash, password_salt, role)
-            VALUES (?, ?, ?, ?, ?, 'customer')
-        `).run(name.trim(), email.toLowerCase(), phone || null, hash, salt);
+            INSERT INTO users (name, username, email, phone, password_hash, password_salt, role)
+            VALUES (?, ?, ?, ?, ?, ?, 'customer')
+        `).run(name.trim(), hasUsername ? username.trim() : null, hasEmail ? email.toLowerCase() : null, phone || null, hash, salt);
 
         const token = createSession(result.lastInsertRowid);
         setSessionCookie(res, token);
@@ -42,7 +55,14 @@ function register(router) {
         sendJson(res, 201, {
             ok: true,
             token,
-            user: { id: result.lastInsertRowid, name: name.trim(), email: email.toLowerCase(), phone: phone || null, role: 'customer' },
+            user: {
+                id: result.lastInsertRowid,
+                name: name.trim(),
+                username: hasUsername ? username.trim() : null,
+                email: hasEmail ? email.toLowerCase() : null,
+                phone: phone || null,
+                role: 'customer',
+            },
         });
     });
 }
@@ -56,14 +76,21 @@ function login(router) {
             return sendError(res, 400, err.message);
         }
 
-        const { email, password } = body;
-        if (!email || !password) return sendError(res, 400, "Email va parol kiritilishi shart");
+        // "login" maydoni email yoki username bo'lishi mumkin (eski "email" maydoni bilan ham moslashuvchan)
+        const identifier = (body.login || body.username || body.email || '').trim();
+        const { password } = body;
 
-        const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email.toLowerCase());
-        if (!user) return sendError(res, 401, "Email yoki parol xato");
+        if (!identifier || !password) return sendError(res, 400, "Login (yoki email) va parol kiritilishi shart");
+
+        const isEmail = identifier.includes('@');
+        const user = isEmail
+            ? db.prepare('SELECT * FROM users WHERE email = ?').get(identifier.toLowerCase())
+            : db.prepare('SELECT * FROM users WHERE username = ?').get(identifier);
+
+        if (!user) return sendError(res, 401, "Login/email yoki parol xato");
 
         const valid = verifyPassword(password, user.password_salt, user.password_hash);
-        if (!valid) return sendError(res, 401, "Email yoki parol xato");
+        if (!valid) return sendError(res, 401, "Login/email yoki parol xato");
 
         const token = createSession(user.id);
         setSessionCookie(res, token);
@@ -71,7 +98,7 @@ function login(router) {
         sendJson(res, 200, {
             ok: true,
             token,
-            user: { id: user.id, name: user.name, email: user.email, phone: user.phone, role: user.role },
+            user: { id: user.id, name: user.name, username: user.username, email: user.email, phone: user.phone, role: user.role },
         });
     });
 }

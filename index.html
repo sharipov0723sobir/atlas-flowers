@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATLAS FLOWERS - Premium Guldastalar</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header va Navigation -->
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <div class="logo">
+                        <i class="fas fa-gem"></i>
+                        <span class="logo-text">ATLAS FLOWERS</span>
+                    </div>
+                    <ul class="nav-menu" id="navMenu">
+                        <li><a href="#home" class="nav-link active">Bosh sahifa</a></li>
+                        <li><a href="#products" class="nav-link">Mahsulotlar</a></li>
+                        <li><a href="#collection" class="nav-link">Kolleksiyalar</a></li>
+                        <li><a href="#testimonials" class="nav-link">Fikrlar</a></li>
+                        <li><a href="#contact" class="nav-link">Aloqa</a></li>
+                    </ul>
+                    <div class="nav-actions">
+                        <div class="search-box">
+                            <input type="text" id="searchInput" placeholder="Qidirish...">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <button class="icon-btn" id="cartBtn" onclick="toggleCart()">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span class="badge" id="cartCount">0</span>
+                        </button>
+                        <button class="icon-btn" onclick="openLoginModal()">
+                            <i class="fas fa-user"></i>
+                        </button>
+                    </div>
+                    <div class="hamburger" id="hamburger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="hero-badge">ATLAS FLOWERS</div>
+            <h1 class="hero-title">Har bir gul – qalbdan sovg'a</h1>
+
+            <p class="hero-subtitle">Nafislik va muhabbatni ifodalovchi premium guldastalar.<br>Har bir buyurtma mehr bilan tayyorlanadi va o'z vaqtida yetkazib beriladi.</p>
+            <div class="hero-buttons">
+                <a href="#products" class="btn btn-primary">Hoziroq buyurtma berish</a>
+                <a href="#collection" class="btn btn-secondary">Kolleksiyani ko'rish</a>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- Promo Banner -->
+    <section class="promo-banner">
+        <div class="container">
+            <div class="promo-content">
+                <i class="fas fa-gift"></i>
+                <p>🎉 <strong>Yangi kolleksiya!</strong> Bahorgi buketlarga 20% chegirma - <span class="promo-code">BAHOR2026</span></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="filters">
+        <div class="container">
+            <div class="filter-wrapper">
+                <button class="filter-btn active" data-category="all">Barchasi</button>
+                <button class="filter-btn" data-category="roses">Atirgullar</button>
+                <button class="filter-btn" data-category="tulips">Lola</button>
+                <button class="filter-btn" data-category="lilies">Liliya</button>
+                <button class="filter-btn" data-category="mixed">Aralash</button>
+                <button class="filter-btn" data-category="premium">Premium</button>
+                <button class="filter-btn" data-category="holiday">Bayram</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mahsulotlar Section -->
+    <section id="products" class="products">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Mashhur Guldastalar</h2>
+                <p class="section-subtitle">Eng ko'p buyurtma qilinadigan buketlarimiz</p>
+            </div>
+            <div class="product-grid" id="productGrid">
+                <!-- Product Card 1 -->
+                <div class="product-card" data-category="roses premium">
+                    <div class="product-image">
+
+                        <div class="product-badge top">Top</div>
+                        <div class="product-overlay">
+                            <button class="btn-icon" onclick="quickView(1)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-icon" onclick="toggleWishlist(1)">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="placeholder-image rose-bg">
+                            <i class="fas fa-rose"></i>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">Romantik Atirgul Buketi</h3>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <span>(48)</span>
+                        </div>
+                        <p class="product-description">15 ta qizil premium atirgul</p>
+                        <div class="product-footer">
+                            <span class="product-price">350,000 <span class="currency">so'm</span></span>
+                            <button class="btn btn-small" onclick="addToCart(1, 'Romantik Atirgul Buketi', 350000)">
+                                <i class="fas fa-shopping-bag"></i> Savatga
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 2 -->
+                <div class="product-card" data-category="tulips mixed">
+                    <div class="product-image">
+                        <div class="product-badge new">Yangi</div>
+                        <div class="product-overlay">
+                            <button class="btn-icon" onclick="quickView(2)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-icon" onclick="toggleWishlist(2)">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="placeholder-image tulip-bg">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                    </div>
+
+                    <div class="product-info">
+                        <h3 class="product-name">Bahor Lolalari</h3>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <span>(32)</span>
+                        </div>
+                        <p class="product-description">25 ta rang-barang lola</p>
+                        <div class="product-footer">
+                            <span class="product-price">280,000 <span class="currency">so'm</span></span>
+                            <button class="btn btn-small" onclick="addToCart(2, 'Bahor Lolalari', 280000)">
+                                <i class="fas fa-shopping-bag"></i> Savatga
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 3 -->
+                <div class="product-card" data-category="lilies premium">
+                    <div class="product-image">
+                        <div class="product-overlay">
+                            <button class="btn-icon" onclick="quickView(3)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-icon" onclick="toggleWishlist(3)">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="placeholder-image orchid-bg">
+                            <i class="fas fa-spa"></i>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">Oq Liliya Kompozitsiyasi</h3>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <span>(56)</span>
+                        </div>
+                        <p class="product-description">Premium oq liliyalar va yashil</p>
+                        <div class="product-footer">
+                            <span class="product-price">420,000 <span class="currency">so'm</span></span>
+                            <button class="btn btn-small" onclick="addToCart(3, 'Oq Liliya Kompozitsiyasi', 420000)">
+                                <i class="fas fa-shopping-bag"></i> Savatga
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Product Card 4 -->
+                <div class="product-card" data-category="mixed holiday">
+                    <div class="product-image">
+                        <div class="product-badge sale">-20%</div>
+                        <div class="product-overlay">
+                            <button class="btn-icon" onclick="quickView(4)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-icon" onclick="toggleWishlist(4)">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="placeholder-image sunflower-bg">
+                            <i class="fas fa-sun"></i>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">Quyosh Nuri</h3>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            <span>(41)</span>
+                        </div>
+                        <p class="product-description">Sariq atirgul va kungaboqar</p>
+                        <div class="product-footer">
+                            <span class="product-price">240,000 <span class="currency">so'm</span></span>
+                            <span class="old-price">300,000</span>
+                            <button class="btn btn-small" onclick="addToCart(4, 'Quyosh Nuri', 240000)">
+                                <i class="fas fa-shopping-bag"></i> Savatga
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 5 -->
+                <div class="product-card" data-category="mixed premium">
+                    <div class="product-image">
+                        <div class="product-overlay">
+                            <button class="btn-icon" onclick="quickView(5)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-icon" onclick="toggleWishlist(5)">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="placeholder-image lavender-bg">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                    </div>
+
+                    <div class="product-info">
+                        <h3 class="product-name">Binafsha Orzular</h3>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <span>(39)</span>
+                        </div>
+                        <p class="product-description">Eustoma va pushti atirgullar</p>
+                        <div class="product-footer">
+                            <span class="product-price">310,000 <span class="currency">so'm</span></span>
+                            <button class="btn btn-small" onclick="addToCart(5, 'Binafsha Orzular', 310000)">
+                                <i class="fas fa-shopping-bag"></i> Savatga
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 6 -->
+                <div class="product-card" data-category="roses premium">
+                    <div class="product-image">
+                        <div class="product-badge vip">VIP</div>
+                        <div class="product-overlay">
+                            <button class="btn-icon" onclick="quickView(6)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-icon" onclick="toggleWishlist(6)">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="placeholder-image luxury-bg">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">Hashamatli Quti</h3>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <span>(64)</span>
+                        </div>
+                        <p class="product-description">101 ta premium atirgul</p>
+                        <div class="product-footer">
+                            <span class="product-price">650,000 <span class="currency">so'm</span></span>
+                            <button class="btn btn-small" onclick="addToCart(6, 'Hashamatli Quti', 650000)">
+                                <i class="fas fa-shopping-bag"></i> Savatga
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Kolleksiya Section -->
+    <section id="collection" class="collection">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Yangi Kolleksiya</h2>
+                <p class="section-subtitle">2026 yil bahor kolleksiyasi</p>
+            </div>
+            <div class="collection-grid">
+                <div class="collection-card">
+                    <div class="collection-image">
+                        <div class="placeholder-image collection-1">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                    </div>
+                    <h3>Sevgi Kolleksiyasi</h3>
+                    <p>Romantik buketlar va qizil atirgullar</p>
+                    <a href="#products" class="btn btn-outline">Ko'rish</a>
+                </div>
+                <div class="collection-card">
+                    <div class="collection-image">
+                        <div class="placeholder-image collection-2">
+                            <i class="fas fa-birthday-cake"></i>
+                        </div>
+                    </div>
+                    <h3>Bayram Kolleksiyasi</h3>
+                    <p>Tug'ilgan kunlar va maxsus tadbirlar</p>
+                    <a href="#products" class="btn btn-outline">Ko'rish</a>
+                </div>
+                <div class="collection-card">
+                    <div class="collection-image">
+                        <div class="placeholder-image collection-3">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                    </div>
+                    <h3>Premium Kolleksiya</h3>
+                    <p>Hashamatli va noyob buketlar</p>
+                    <a href="#products" class="btn btn-outline">Ko'rish</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Mijozlar Fikrlari</h2>
+                <p class="section-subtitle">Bizning baxtli mijozlarimiz nima deyishadi</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"Ajoyib xizmat va chiroyli gullar! Xotinim juda xursand bo'ldi. Albatta yana buyurtma beraman."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <h4>Sardor Rahimov</h4>
+                            <span>Toshkent</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"Premium sifat va o'z vaqtida yetkazib berish. ATLAS FLOWERS - eng yaxshi tanlov!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <h4>Malika Karimova</h4>
+                            <span>Samarqand</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"Har safar eng yangi va chiroyli gullarni yetkazib berishadi. Juda minnatdorman!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <h4>Jasur Aliyev</h4>
+                            <span>Andijon</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Biz bilan Bog'laning</h2>
+                <p class="section-subtitle">Savollaringiz bormi? Biz yordam berishga tayyormiz!</p>
+            </div>
+            <div class="contact-wrapper">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div>
+                            <h4>Manzil</h4>
+                            <p>Toshkent sh., Amir Temur ko'chasi, 108</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div>
+                            <h4>Telefon</h4>
+                            <p>+998 90 123 45 67</p>
+                            <p>+998 91 234 56 78</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fab fa-telegram"></i>
+                        </div>
+                        <div>
+                            <h4>Telegram</h4>
+                            <p>@atlasflowers</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fab fa-instagram"></i>
+                        </div>
+                        <div>
+                            <h4>Instagram</h4>
+                            <p>@atlas.flowers</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div>
+                            <h4>Ish vaqti</h4>
+                            <p>Har kuni: 08:00 - 22:00</p>
+                        </div>
+                    </div>
+                    <div class="social-links">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-telegram"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <input type="text" id="name" placeholder="Ismingiz" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" id="phone" placeholder="Telefon raqamingiz" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="email" placeholder="Email manzilingiz" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="message" rows="5" placeholder="Xabaringiz" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Yuborish</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3><i class="fas fa-gem"></i> ATLAS FLOWERS</h3>
+                    <p>Nafislik va muhabbatni ifodalovchi premium guldastalar.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Tez Havolalar</h4>
+                    <ul>
+                        <li><a href="#home">Bosh sahifa</a></li>
+                        <li><a href="#products">Mahsulotlar</a></li>
+                        <li><a href="#collection">Kolleksiyalar</a></li>
+                        <li><a href="#contact">Aloqa</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Ma'lumot</h4>
+                    <ul>
+                        <li><a href="#">Yetkazib berish</a></li>
+                        <li><a href="#">To'lov usullari</a></li>
+                        <li><a href="#">Qaytarish siyosati</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Yangiliklar</h4>
+                    <p>Aksiyalardan birinchi bo'lib xabardor bo'ling!</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Email">
+                        <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ATLAS FLOWERS. Barcha huquqlar himoyalangan.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3><i class="fas fa-shopping-bag"></i> Savat</h3>
+            <button class="close-cart" onclick="toggleCart()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <div class="empty-cart">
+                <i class="fas fa-shopping-bag"></i>
+                <p>Savatingiz bo'sh</p>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Jami:</span>
+                <span id="cartTotal">0 so'm</span>
+            </div>
+            <button class="btn btn-primary btn-block" onclick="checkout()">Buyurtma berish</button>
+        </div>
+    </div>
+
+
+    <!-- Login/Register Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeLoginModal()">&times;</span>
+            <div class="modal-body">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" onclick="showAuthTab('login')">Kirish</button>
+                    <button class="auth-tab" onclick="showAuthTab('register')">Ro'yxatdan o'tish</button>
+                </div>
+                
+                <!-- Login Form -->
+                <div id="loginForm" class="auth-form active">
+                    <h2>Kirish</h2>
+                    <form onsubmit="handleLogin(event)">
+                        <div class="form-group">
+                            <input type="email" placeholder="Email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" placeholder="Parol" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Kirish</button>
+                    </form>
+                </div>
+                
+                <!-- Register Form -->
+                <div id="registerForm" class="auth-form">
+                    <h2>Ro'yxatdan o'tish</h2>
+                    <form onsubmit="handleRegister(event)">
+                        <div class="form-group">
+                            <input type="text" placeholder="Ism" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="Email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" placeholder="Telefon" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" placeholder="Parol" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Ro'yxatdan o'tish</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick View Modal -->
+    <div id="quickViewModal" class="modal">
+        <div class="modal-content modal-large">
+            <span class="close-modal" onclick="closeQuickView()">&times;</span>
+            <div class="modal-body">
+                <div class="quick-view-content">
+                    <div class="quick-view-image" id="quickViewImage">
+                    </div>
+                    <div class="quick-view-info">
+                        <h2 id="quickViewTitle"></h2>
+                        <div class="product-rating" id="quickViewRating"></div>
+                        <p class="modal-price" id="quickViewPrice"></p>
+                        <p id="quickViewDescription"></p>
+                        <div class="quantity-selector">
+                            <button onclick="decreaseQuantity()">-</button>
+                            <input type="number" id="quantityInput" value="1" min="1">
+                            <button onclick="increaseQuantity()">+</button>
+                        </div>
+                        <button class="btn btn-primary btn-block" onclick="addFromQuickView()">
+                            <i class="fas fa-shopping-bag"></i> Savatga qo'shish
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTop" class="scroll-top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="script.js"></script>
+</body>
+</html>

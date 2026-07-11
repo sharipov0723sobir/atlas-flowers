@@ -2,24 +2,26 @@
 /* Ranglar: Ko'k, Binafsha, Yashil, Oltin, Oq */
 
 :root {
-    /* ATLAS ranglar */
-    --primary-blue: #2D5F9F;
-    --primary-purple: #7B5BA7;
-    --primary-green: #4A8B7C;
-    --primary-gold: #D4AF37;
-    --accent-rose: #C85A8E;
+    /* ATLAS FLOWERS ranglar - Logotipga moslashtirilgan */
+    --primary-burgundy: #8B1538;     /* Quyuq bordo */
+    --primary-crimson: #C41E3A;      /* Qizil */
+    --primary-wine: #722F37;         /* Vinograd */
+    --primary-gold: #FFB347;         /* Oltin-to'q sariq */
+    --accent-gold: #FFA500;          /* Yorqin oltin */
     
     /* Yordamchi ranglar */
     --white: #FFFFFF;
     --light-gray: #F8F9FA;
-    --medium-gray: #E9ECEF;
-    --dark-gray: #495057;
-    --text-dark: #212529;
+    --medium-gray: #D4C5BD;          /* Atlas kulrangi */
+    --dark-gray: #5A4A42;
+    --text-dark: #2C1810;
+    --atlas-beige: #C9B8A8;          /* Atlas matoning rangi */
     
     /* Gradient ranglar */
-    --gradient-primary: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
-    --gradient-gold: linear-gradient(135deg, var(--primary-gold), #E8C766);
-    --gradient-overlay: linear-gradient(135deg, rgba(45, 95, 159, 0.9), rgba(123, 91, 167, 0.9));
+    --gradient-primary: linear-gradient(135deg, var(--primary-burgundy), var(--primary-crimson));
+    --gradient-gold: linear-gradient(135deg, var(--accent-gold), var(--primary-gold));
+    --gradient-overlay: linear-gradient(135deg, rgba(139, 21, 56, 0.9), rgba(196, 30, 58, 0.9));
+    --gradient-atlas: linear-gradient(135deg, #8B1538, #C41E3A, #722F37);
     
     /* Shriftlar */
     --font-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -52,7 +54,7 @@ body {
 }
 
 
-/* ===== ATLAS teksturali fon ===== */
+/* ===== ATLAS teksturali fon - Ikat naqshi ===== */
 body::before {
     content: '';
     position: fixed;
@@ -61,12 +63,27 @@ body::before {
     width: 100%;
     height: 100%;
     background: 
-        linear-gradient(45deg, transparent 48%, rgba(45, 95, 159, 0.02) 49%, rgba(45, 95, 159, 0.02) 51%, transparent 52%),
-        linear-gradient(-45deg, transparent 48%, rgba(123, 91, 167, 0.02) 49%, rgba(123, 91, 167, 0.02) 51%, transparent 52%);
-    background-size: 30px 30px;
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 10px,
+            rgba(139, 21, 56, 0.03) 10px,
+            rgba(139, 21, 56, 0.03) 20px,
+            transparent 20px,
+            transparent 40px,
+            rgba(196, 30, 58, 0.03) 40px,
+            rgba(196, 30, 58, 0.03) 50px
+        ),
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 10px,
+            rgba(114, 47, 55, 0.02) 10px,
+            rgba(114, 47, 55, 0.02) 20px
+        );
     pointer-events: none;
     z-index: -1;
-    opacity: 0.5;
+    opacity: 0.6;
 }
 
 .container {
@@ -101,17 +118,23 @@ header {
 .logo {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     font-size: 1.5rem;
     font-weight: bold;
-    color: var(--primary-blue);
+    color: var(--primary-burgundy);
     text-decoration: none;
 }
 
+.logo-icon {
+    animation: gemSparkle 3s infinite;
+    filter: drop-shadow(0 2px 8px rgba(255, 165, 0, 0.4));
+}
+
 .logo i {
-    color: var(--primary-gold);
+    color: var(--accent-gold);
     font-size: 1.8rem;
     animation: gemSparkle 3s infinite;
+    filter: drop-shadow(0 2px 4px rgba(139, 21, 56, 0.3));
 }
 
 
@@ -160,6 +183,10 @@ header {
     width: 100%;
 }
 
+.nav-link:hover {
+    color: var(--primary-crimson);
+}
+
 .nav-actions {
     display: flex;
     align-items: center;
@@ -182,8 +209,9 @@ header {
 }
 
 .search-box input:focus {
-    border-color: var(--primary-blue);
+    border-color: var(--primary-crimson);
     width: 250px;
+    box-shadow: 0 0 0 3px rgba(196, 30, 58, 0.1);
 }
 
 
@@ -207,20 +235,21 @@ header {
 
 .icon-btn:hover {
     background: var(--light-gray);
-    color: var(--primary-blue);
+    color: var(--primary-crimson);
 }
 
 .badge {
     position: absolute;
     top: 0;
     right: 0;
-    background: var(--accent-rose);
+    background: var(--primary-crimson);
     color: white;
     font-size: 0.7rem;
     padding: 0.2rem 0.4rem;
     border-radius: 10px;
     min-width: 18px;
     text-align: center;
+    box-shadow: 0 2px 4px rgba(196, 30, 58, 0.4);
 }
 
 .hamburger {
@@ -233,7 +262,7 @@ header {
 .hamburger span {
     width: 25px;
     height: 3px;
-    background: var(--primary-blue);
+    background: var(--primary-burgundy);
     border-radius: 3px;
     transition: var(--transition);
 }
@@ -256,9 +285,9 @@ header {
     width: 100%;
     height: 100%;
     background-image: 
-        radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(200, 90, 142, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 40% 80%, rgba(74, 139, 124, 0.1) 0%, transparent 50%);
+        radial-gradient(circle at 20% 50%, rgba(255, 165, 0, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(196, 30, 58, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(139, 21, 56, 0.15) 0%, transparent 50%);
     animation: heroGradient 20s ease infinite;
 }
 
@@ -272,7 +301,7 @@ header {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: rgba(45, 95, 159, 0.1);
+    background: rgba(139, 21, 56, 0.15);
 }
 
 .hero-content {
@@ -386,12 +415,12 @@ header {
 
 .btn-outline {
     background: transparent;
-    color: var(--primary-blue);
-    border: 2px solid var(--primary-blue);
+    color: var(--primary-crimson);
+    border: 2px solid var(--primary-crimson);
 }
 
 .btn-outline:hover {
-    background: var(--primary-blue);
+    background: var(--primary-crimson);
     color: white;
 }
 
@@ -421,9 +450,10 @@ header {
 }
 
 .btn-icon:hover {
-    background: var(--primary-gold);
+    background: var(--accent-gold);
     color: white;
     transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(255, 165, 0, 0.4);
 }
 
 /* ===== PROMO BANNER ===== */
@@ -444,7 +474,7 @@ header {
 
 .promo-content i {
     font-size: 1.5rem;
-    color: var(--primary-gold);
+    color: var(--accent-gold);
 }
 
 .promo-code {
@@ -480,9 +510,10 @@ header {
 
 .filter-btn:hover,
 .filter-btn.active {
-    background: var(--primary-blue);
+    background: var(--gradient-primary);
     color: white;
-    border-color: var(--primary-blue);
+    border-color: var(--primary-burgundy);
+    box-shadow: 0 4px 12px rgba(139, 21, 56, 0.3);
 }
 
 
@@ -495,7 +526,7 @@ header {
 .section-title {
     font-size: 2.5rem;
     font-family: var(--font-elegant);
-    color: var(--primary-blue);
+    color: var(--primary-burgundy);
     margin-bottom: 0.5rem;
     position: relative;
     display: inline-block;
@@ -565,19 +596,19 @@ header {
 
 
 .product-badge.top {
-    background: var(--primary-gold);
+    background: var(--accent-gold);
 }
 
 .product-badge.new {
-    background: var(--primary-green);
+    background: var(--primary-crimson);
 }
 
 .product-badge.sale {
-    background: var(--accent-rose);
+    background: var(--primary-burgundy);
 }
 
 .product-badge.vip {
-    background: var(--primary-purple);
+    background: var(--primary-wine);
 }
 
 .product-overlay {
@@ -586,7 +617,7 @@ header {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(45, 95, 159, 0.9);
+    background: linear-gradient(135deg, rgba(139, 21, 56, 0.95), rgba(196, 30, 58, 0.95));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -635,9 +666,10 @@ header {
 
 
 .product-rating {
-    color: var(--primary-gold);
+    color: var(--accent-gold);
     font-size: 0.9rem;
     margin-bottom: 0.5rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .product-rating span {
@@ -663,7 +695,7 @@ header {
 .product-price {
     font-size: 1.3rem;
     font-weight: bold;
-    color: var(--primary-blue);
+    color: var(--primary-burgundy);
 }
 
 .currency {
@@ -712,7 +744,7 @@ header {
 .collection-card h3 {
     padding: 1.5rem 1rem 0.5rem;
     font-size: 1.5rem;
-    color: var(--primary-blue);
+    color: var(--primary-burgundy);
 }
 
 .collection-card p {
@@ -750,9 +782,10 @@ header {
 }
 
 .testimonial-stars {
-    color: var(--primary-gold);
+    color: var(--accent-gold);
     font-size: 1.2rem;
     margin-bottom: 1rem;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .testimonial-text {
@@ -782,7 +815,8 @@ header {
 
 .testimonial-author h4 {
     margin-bottom: 0.2rem;
-    color: var(--text-dark);
+    color: var(--primary-burgundy);
+    font-weight: 600;
 }
 
 .testimonial-author span {
@@ -834,7 +868,8 @@ header {
 
 .contact-item h4 {
     margin-bottom: 0.5rem;
-    color: var(--primary-blue);
+    color: var(--primary-burgundy);
+    font-weight: 600;
 }
 
 .contact-item p {
@@ -892,7 +927,8 @@ header {
 .form-group input:focus,
 .form-group textarea:focus {
     outline: none;
-    border-color: var(--primary-blue);
+    border-color: var(--primary-crimson);
+    box-shadow: 0 0 0 3px rgba(196, 30, 58, 0.1);
 }
 
 .form-group textarea {
@@ -917,7 +953,8 @@ header {
 .footer-section h3,
 .footer-section h4 {
     margin-bottom: 1rem;
-    color: var(--primary-gold);
+    color: var(--accent-gold);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .footer-section p {
@@ -968,7 +1005,7 @@ header {
 
 .newsletter-form button {
     padding: 0.7rem 1.2rem;
-    background: var(--primary-gold);
+    background: var(--accent-gold);
     border: none;
     border-radius: 25px;
     color: white;
@@ -1094,8 +1131,14 @@ header {
 }
 
 .cart-item-remove {
-    color: var(--accent-rose);
+    color: var(--primary-crimson);
     cursor: pointer;
+    transition: var(--transition);
+}
+
+.cart-item-remove:hover {
+    color: var(--primary-burgundy);
+    transform: scale(1.2);
 }
 
 .cart-footer {
@@ -1110,7 +1153,10 @@ header {
     font-size: 1.3rem;
     font-weight: bold;
     margin-bottom: 1rem;
-    color: var(--primary-blue);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 
@@ -1186,7 +1232,7 @@ header {
 }
 
 .modal-body h2 {
-    color: var(--primary-blue);
+    color: var(--primary-burgundy);
     margin-bottom: 1rem;
     font-family: var(--font-elegant);
 }
@@ -1194,7 +1240,10 @@ header {
 .modal-price {
     font-size: 1.5rem;
     font-weight: bold;
-    color: var(--primary-blue);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     margin: 1rem 0;
 }
 
@@ -1255,17 +1304,18 @@ header {
     width: 35px;
     height: 35px;
     border-radius: 50%;
-    border: 2px solid var(--primary-blue);
+    border: 2px solid var(--primary-crimson);
     background: white;
-    color: var(--primary-blue);
+    color: var(--primary-crimson);
     cursor: pointer;
     font-size: 1.2rem;
     transition: var(--transition);
 }
 
 .quantity-selector button:hover {
-    background: var(--primary-blue);
+    background: var(--gradient-primary);
     color: white;
+    border-color: var(--primary-burgundy);
 }
 
 .quantity-selector input {
